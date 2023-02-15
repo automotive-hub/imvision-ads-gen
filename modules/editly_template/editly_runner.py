@@ -5,8 +5,6 @@ import subprocess
 from subprocess import Popen
 from models.vehicleInfo import VehicleInfo
 
-from modules.editly_template.editly_builder import realPathHelper
-
 
 class EditlyRunner:
     desktopRatio = {

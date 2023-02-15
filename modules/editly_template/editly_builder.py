@@ -1,10 +1,6 @@
-import json
 from .editly_template import EditlyTemplate
 from models.vehicleInfo import VehicleInfo
-import glob
 import os
-import pathlib
-import numpy as np
 
 
 class EditlyBuilder:
