@@ -11,6 +11,8 @@ from typing import List
 class DealershipInfo:
     name: str
     location: str
+    public_imgs: List[str]
+    local_imgs: List[str]
 
 
 @dataclass
