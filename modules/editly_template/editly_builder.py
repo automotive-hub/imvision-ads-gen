@@ -17,16 +17,29 @@ class EditlyBuilder:
         template = EditlyTemplate()
         vehicleIMGFlash = [template.makeVehicleIMGSense(dealerShipIMGPath=i)
                            for i in carIMG[0:len(carIMG)]]
+
+        dealerIMG = carIMG[0]
+        if len(info.dealership_info.local_imgs) > 0:
+            dealerIMG = self.realPathHelper(info.dealership_info.local_imgs)[0]
         senses = [
+            ## [makeIntroGreeting] [0]
             template.makeIntroGreeting(
                 text="ARE YOU LOOKING FOR", fontPath=fontPath),
+            ## [makeVehicleMainEntrySense] [1]
             template.makeVehicleMainEntrySense(
                 carIMG[0], info.vehicle_name),
-            template.makeDealershipSense(carIMG[0]),
-            # [INSERT SECTION]
+
+            # [makeDealershipSense][2]
+            template.makeDealershipSense(dealerIMG),
+
+            # [INSERT SECTION] [3]
+            ########
+            ## [makeVehicleCallToAction] [4]
             template.makeVehicleCallToAction(
                 callToActionIMGPath=carIMG[1])
         ]
+
+        # [INSERT SECTION] [3]
         indexCounter = 3
         for i in vehicleIMGFlash:
             senses.insert(indexCounter, i)
