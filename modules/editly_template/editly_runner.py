@@ -68,6 +68,7 @@ class EditlyRunner:
         # copy paste form stackoverflow
         commands = ['''{headless_gl}editly {file}'''.format(
             file=name, headless_gl=headless_gl) for name in self.mediaFiles]
+        print(commands)
         n = 2  # the number of parallel processes you want
         for j in range(max(int(len(commands)/n), 1)):
             procs = [subprocess.Popen(i, shell=True)
