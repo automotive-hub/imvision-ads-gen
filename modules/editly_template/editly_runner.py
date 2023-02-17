@@ -25,7 +25,9 @@ class EditlyRunner:
         mobileRatio,
     ]
 
-    mediaFiles = []
+    def __init__(self):
+        self.mediaFiles = []
+
     # make ads aspectRatio
     tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
     generatedFolder = os.getenv("GENERATED_FOLDER_LOCATION")
