@@ -19,13 +19,17 @@ class DummyService(Resource):
         vehicleRequest = VehicleRequest()
         runner = EditlyRunner()
         vehicleInfo = vehicleRequest.buildVehicleInfo(vin)
-        ##
+        # Downloaded Vehicle IMG in [../temp]
         vehicleInfo.vehicle_local_imgs = vehicleRequest.downloadVehicleIMG(
             urls=vehicleInfo.vehicle_public_url_imgs, vin=vehicleInfo.vin)
+
+        # Downloaded Dealership IMG in [../temp]
         vehicleInfo.dealership_info.local_imgs = vehicleRequest.downloadVehicleIMG(
             urls=vehicleInfo.dealership_info.public_imgs, vin=vehicleInfo.vin)
-        ##
+
+        # start render
         dataFile = builder.build(vehicleInfo)
         runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
         runner.render()
+        # end render
         return {"name": dummyModel.name, "year": dummyModel.year}
