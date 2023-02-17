@@ -19,7 +19,8 @@ class VehicleRequest:
         self.vinQueryPath = os.getenv('VIN_QUERY_PATH')
         self.tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
         self.vehicleName = os.getenv("VEHICLE_NAME")
-
+        self.dealershipBrandIMG = os.getenv("DEALERSHIP_BRAND_IMG")
+        self.dealerName = os.getenv("DEALERSHIP_NAME")
     # return file list
 
     def buildVehicleInfo(self, vin):
@@ -35,14 +36,21 @@ class VehicleRequest:
         vehicleName = "".join(i.value for i in nameExp.find(data))
         imgsURL = [i.value for i in imgExp.find(data)]
 
+        dealerIMGExp = jsonpath_ng.parse(self.dealershipBrandIMG)
+        dealerIMG = [i.value for i in dealerIMGExp.find(data)]
+
+        dealerNameExp = jsonpath_ng.parse(self.dealerName)
+        dealerName = "".join(i.value for i in dealerNameExp.find(data))
+#
         return VehicleInfo(
             vehicle_name=vehicleName, vin=vin, price=0,
-            dealership_info=DealershipInfo("XXX", "XXX"),
+            dealership_info=DealershipInfo(
+                name=dealerName, location="VN", public_imgs=dealerIMG, local_imgs=[]),
             vehicle_public_url_imgs=imgsURL,
             vehicle_local_imgs=[]
         )
 
-    def downloadVehicleIMG(self, info: VehicleInfo):
+    def downloadVehicleIMG(self, urls, vin):
         # params = {
         #     "keywordPhrases": vin
         # }
@@ -56,7 +64,7 @@ class VehicleRequest:
         # #
         # imgsURL = [i.value for i in imgExp.find(data)]
         # vin = "".join(i.value for i in vinExp.find(data))
-        files = self.bulkDownload(info.vehicle_public_url_imgs, info.vin)
+        files = self.bulkDownload(urls, vin)
         return files
 
     def bulkDownload(self, imgsURL, vin):
