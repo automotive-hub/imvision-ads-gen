@@ -1,6 +1,7 @@
 import json
 from multiprocessing.pool import ThreadPool
 import os
+import platform
 import subprocess
 from subprocess import Popen
 from models.vehicleInfo import VehicleInfo
@@ -61,10 +62,12 @@ class EditlyRunner:
                 json.dump(data, newFile)
 
     def render(self):
-
+        headless_gl = ""
+        if platform.system() == "Linux":
+            headless_gl = '''xvfb-run -s "-ac -screen 0 1280x1024x24 "'''
         # copy paste form stackoverflow
-        commands = ['''editly {file}'''.format(
-            file=name) for name in self.mediaFiles]
+        commands = ['''{headless_gl}editly {file}'''.format(
+            file=name, headless_gl=headless_gl) for name in self.mediaFiles]
         n = 2  # the number of parallel processes you want
         for j in range(max(int(len(commands)/n), 1)):
             procs = [subprocess.Popen(i, shell=True)
