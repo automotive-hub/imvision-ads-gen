@@ -19,7 +19,7 @@ curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - &&\
 sudo apt-get install -y nodejs
 #
 
-npm config set unsafe-perm true
+sudo npm config set unsafe-perm true
 sudo npm i -g editly
 
 sudo apt-get install -y python3-pip
