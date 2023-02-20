@@ -23,7 +23,7 @@ class VehicleRequest:
         self.dealerName = os.getenv("DEALERSHIP_NAME")
     # return file list
 
-    def buildVehicleInfo(self, vin):
+    def buildVehicleInfo(self, vin, id):
         params = {
             "keywordPhrases": vin
         }
@@ -43,6 +43,7 @@ class VehicleRequest:
         dealerName = "".join(i.value for i in dealerNameExp.find(data))
 #
         return VehicleInfo(
+            id=id,
             vehicle_name=vehicleName, vin=vin, price=0,
             dealership_info=DealershipInfo(
                 name=dealerName, location="VN", public_imgs=dealerIMG, local_imgs=[]),
@@ -50,26 +51,13 @@ class VehicleRequest:
             vehicle_local_imgs=[]
         )
 
-    def downloadVehicleIMG(self, urls, vin):
-        # params = {
-        #     "keywordPhrases": vin
-        # }
-        # respond = requests.get(self.vehicleSearchDomain, params=params)
-        # data = respond.json()
-        # # imgSources = data["listings"][0]["images"]["sources"]
-        # # vin = data["listings"][0]["vin"]
-        # # imgsURL = [i["src"] for i in imgSources]
-        # imgExp = jsonpath_ng.parse(self.vehicleIMGQueryPath)
-        # vinExp = jsonpath_ng.parse(self.vinQueryPath)
-        # #
-        # imgsURL = [i.value for i in imgExp.find(data)]
-        # vin = "".join(i.value for i in vinExp.find(data))
-        files = self.bulkDownload(urls, vin)
+    def downloadVehicleIMG(self, urls, folder):
+        files = self.bulkDownload(urls, folder)
         return files
 
-    def bulkDownload(self, imgsURL, vin):
+    def bulkDownload(self, imgsURL, folder):
         pool = ThreadPool(4)
-        downloadPath = os.path.join(self.tempFolderLocation, vin)
+        downloadPath = os.path.join(self.tempFolderLocation, folder)
         os.makedirs(downloadPath, exist_ok=True)
         files = pool.starmap(
             self.downloadIMGs, zip(imgsURL, [downloadPath for _ in imgsURL]))
