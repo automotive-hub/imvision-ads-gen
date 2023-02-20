@@ -29,6 +29,9 @@ class VehicleInfo:
     def folder_name(self):
         return self.id
 
+    def dealership_folder_name(self):
+        return os.path.join(self.id, "dealership")
+
 
 @dataclass
 class MediaInfo:

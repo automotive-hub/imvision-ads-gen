@@ -25,6 +25,22 @@ def upload_image(vin):
         # print(blob.public_url)
 
 
+def upload_video(vin):
+    tempFolderLocation = os.getenv("GENERATED_FOLDER_LOCATION")
+    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/**"
+    client = storage.Client()
+    bucket = client.get_bucket('imvision-ads.appspot.com')
+    for stringFile in glob.glob(tempFolderLocation):
+        # get name, that is last item after split
+        print(str(stringFile).split("\\")[-1:][0])
+        # fileName = str(stringFile).split("\\")[-1:][0]
+        fileName = os.path.basename(str(stringFile))
+        fileBloc = "video_upload/" + vin + "/" + fileName
+        blob = bucket.blob(fileBloc)
+        blob.upload_from_filename(stringFile)
+        # print(blob.public_url)
+
+
 def predict_image_classification_sample(
     vin: str,
     endpoint_id: str,
@@ -38,7 +54,7 @@ def predict_image_classification_sample(
     client = aiplatform.gapic.PredictionServiceClient(
         client_options=client_options)
     tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
-    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/**"
+    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/*"
 
     for stringFile in glob.glob(tempFolderLocation):
         encoded_content = []

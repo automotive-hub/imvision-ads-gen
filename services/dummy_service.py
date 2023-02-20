@@ -10,7 +10,7 @@ from modules.editly_template.editly_runner import EditlyRunner
 from models.vehicleInfo import VehicleInfo, DealershipInfo
 import os
 
-from services.ml_service.image_process import predict_image_classification_sample, upload_image
+from services.ml_service.image_process import predict_image_classification_sample, upload_image, upload_video
 # runner = EditlyRunner()
 
 
@@ -36,19 +36,22 @@ class DummyService(Resource):
 
         # Downloaded Dealership IMG in [../temp]
         vehicleInfo.dealership_info.local_imgs = vehicleRequest.downloadVehicleIMG(
-            urls=vehicleInfo.dealership_info.public_imgs, folder=vehicleInfo.folder_name())
+            urls=vehicleInfo.dealership_info.public_imgs, folder=vehicleInfo.dealership_folder_name())
 
         populateVINCollectionPatten(
             vinWithSalt, len(vehicleInfo.vehicle_local_imgs))
 
         upload_image(vinWithSalt)
-        #
-        predict_image_classification_sample(vinWithSalt, endpoint_id="989371348998422528"
-                                            )
+        # #
+        # predict_image_classification_sample(vinWithSalt, endpoint_id="1185277932789039104"
+        #                                     )
 
-        # start render
+        # # start render
         dataFile = builder.build(vehicleInfo)
         runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
-        # runner.render()
+        runner.render()
+
+        upload_video(vinWithSalt)
+
         # end render
         return {"name": dummyModel.name, "year": dummyModel.year}
