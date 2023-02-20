@@ -5,7 +5,9 @@ import os
 
 class EditlyBuilder:
     def realPathHelper(self, urls):
-        return [os.path.realpath(i) for i in urls]
+        # optional for realPath
+        # return [os.path.realpath(i) for i in urls]
+        return urls
 
     def build(self, info: VehicleInfo):
         pattern = "*.[jpg][jpeg][png]"
@@ -42,7 +44,7 @@ class EditlyBuilder:
         # [INSERT SECTION] [3]
         indexCounter = 3
         for i in vehicleIMGFlash:
-            senses.insert(indexCounter, i)
+            # senses.insert(indexCounter, i)
             indexCounter += 1
 
         dataFile = template.buildDataFrame(
