@@ -60,6 +60,10 @@ def populateVINCollectionPatten(id, totalIMGs=0):
         Classification().__dict__)
     return True
 
+def updateImageCounter(id, totalIMGs):
+    status_collection.document(id).update(Status(
+    image_total=totalIMGs,
+    prediction_total=totalIMGs).__dict__)
 
 # for i in ["1FT6W1EV5PWG07389", "3GNKBERS7MS537121", "5NMS44AL1PH506217"]:
 #     populateVINCollectionPatten(i)
