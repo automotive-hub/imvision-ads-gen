@@ -1,3 +1,4 @@
+import os
 from typing import List
 from typing import Any
 from dataclasses import dataclass
@@ -17,12 +18,16 @@ class DealershipInfo:
 
 @dataclass
 class VehicleInfo:
+    id: str
     vehicle_name: str
     vin: str
     price: int
     dealership_info: DealershipInfo
     vehicle_public_url_imgs: List[str]
     vehicle_local_imgs: List[str]
+
+    def folder_name(self):
+        return self.id
 
 
 @dataclass
@@ -37,17 +42,19 @@ class MediaInfo:
 
 @dataclass
 class AdsMedia:
-    desktop_video_ref: str
-    mobile_video_ref: str
-    banner_ref: str
-    gif_ref: str
+    desktop_video_ref: str = ""
+    mobile_video_ref: str = ""
+    banner_ref: str = ""
+    gif_ref: str = ""
 
 
 @dataclass
 class Status:
 
-    image: int = 0
+    image_counter: int = 0
     image_total: int = 0
+    prediction_counter = 0
+    prediction_total: int = 0
     # status
     # ["idle", "processing", "done"]
     download: str = "idle"
