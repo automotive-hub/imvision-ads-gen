@@ -8,7 +8,11 @@ import google.auth
 from models.vehicleInfo import Status, AdsMedia
 
 # project == "imvision-ads"
-credential, project = google.auth.default()
+credential, project = google.auth.default(
+    scopes=[
+        "https://www.googleapis.com/auth/datastore"
+    ]
+)
 
 db = Client(project=project, credentials=credential)
 ads_collection = db.collection("ads")
