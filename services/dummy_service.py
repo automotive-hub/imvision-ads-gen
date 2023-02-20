@@ -22,7 +22,7 @@ def praseRequest(vinWithSalt=""):
 
 
 class DummyService(Resource):
-    def get(self, vinWithSalt):
+    def post(self, vinWithSalt):
         vin, salt = praseRequest(vinWithSalt=vinWithSalt)
         dummyModel = DummyModel("test name", "test year")
         builder = EditlyBuilder()
