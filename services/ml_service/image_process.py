@@ -4,20 +4,26 @@ from google.cloud import aiplatform, storage
 from google.cloud.aiplatform.gapic.schema import predict
 import os
 import glob
+from database import updateClassification
+
+from models.classification import Classification
+
 
 def upload_image(vin):
     tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
-    tempFolderLocation = os.path.join(tempFolderLocation,vin) + "/**"
+    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/**"
     client = storage.Client()
     bucket = client.get_bucket('imvision-ads.appspot.com')
     for stringFile in glob.glob(tempFolderLocation):
         # get name, that is last item after split
         print(str(stringFile).split("\\")[-1:][0])
-        fileName = str(stringFile).split("\\")[-1:][0]
+        # fileName = str(stringFile).split("\\")[-1:][0]
+        fileName = os.path.basename(str(stringFile))
         fileBloc = "image_upload/" + vin + "/" + fileName
         blob = bucket.blob(fileBloc)
         blob.upload_from_filename(stringFile)
-    # print(blob.public_url)
+        # print(blob.public_url)
+
 
 def predict_image_classification_sample(
     vin: str,
@@ -26,14 +32,15 @@ def predict_image_classification_sample(
     location: str = "us-central1",
     api_endpoint: str = "us-central1-aiplatform.googleapis.com",
 ):
+    vehicleClassification = Classification()
 
     client_options = {"api_endpoint": api_endpoint}
     client = aiplatform.gapic.PredictionServiceClient(
         client_options=client_options)
     tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
-    tempFolderLocation = os.path.join(tempFolderLocation,vin) + "/**"
-    
-    for stringFile in glob.glob(tempFolderLocation):  
+    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/**"
+
+    for stringFile in glob.glob(tempFolderLocation):
         encoded_content = []
         with open(stringFile, "rb") as f:
             file_content = f.read()
@@ -55,14 +62,25 @@ def predict_image_classification_sample(
             print(" prediction arr:", predictionDict['confidences'])
             indexOfMax = find_index_of_max(predictionDict['confidences'])
             print("index max", indexOfMax)
-            labelPred = get_label_by_index(indexOfMax, predictionDict['displayNames'])
+            labelPred = get_label_by_index(
+                indexOfMax, predictionDict['displayNames'])
             print("label", labelPred)
+            fileName = os.path.basename(str(stringFile))
+            publicFileURL = '''https://storage.googleapis.com/imvision-ads.appspot.com/image_upload/{vin}/{fileName}'''.format(
+                vin=vin, fileName=fileName)
+            vehicleClassification.update(labelPred, publicFileURL)
+            updateClassification(vin=vin, label=labelPred,
+                                 data=vehicleClassification)
+    return vehicleClassification
 
 # help function
+
+
 def find_index_of_max(input_list: list):
     max_value = max(input_list)
     index = input_list.index(max_value)
     return index
+
 
 def get_label_by_index(index: int, labels: list):
     return labels[index]
