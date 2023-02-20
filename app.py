@@ -10,7 +10,7 @@ app = Flask(__name__)
 api = Api(app)
 
 
-api.add_resource(DummyService, "/dummy/<vin>")
+api.add_resource(DummyService, "/dummy/<vinWithSalt>")
 
 
 if __name__ == "__main__":

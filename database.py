@@ -1,25 +1,61 @@
-from google.cloud import firestore_v1 as firestore
+import json
+from google.cloud import firestore_v1 as firestore, storage
+from google.auth import credentials
 from google.cloud.firestore_v1.client import Client
+from google.cloud.storage import Client as FileStorageClient
+from models.classification import Classification
+import google.auth
+from models.vehicleInfo import Status, AdsMedia
 
-from models.vehicleInfo import VehicleInfo, DealershipInfo, Status
+# project == "imvision-ads"
+credential, project = google.auth.default()
 
-db = Client(project="imvision-ads")
+db = Client(project=project, credentials=credential)
 ads_collection = db.collection("ads")
 status_collection = db.collection("status")
 classification_collection = db.collection("classification")
+#
+fileStorage = FileStorageClient(project=project, credentials=credential)
 
 
-def createAdsMediaRef(id, mediaInfo):
-    ads_collection.document(id).set()
+def addAdsMedia(id, mediaInfo: AdsMedia):
+    ads_collection.document(id).set(mediaInfo)
 
 
-def populateVINCollectionPatten(id):
-    status_collection.document(id).set(Status(
-        image_total=0
-    ).__dict__)
-    ads_collection.document(id).set(document_data={})
-    classification_collection.document(id).set(document_data={})
+def updateClassification(vin, label, data: Classification):
+    _updateClassificationStatus(vin)
+    mapDict = {}
+    mapDict[label] = data.__dict__[label]
+    classification_collection.document(vin).update(
+        mapDict,
+    )
+
+
+def _updateClassificationStatus(vin):
+    status_collection.document(vin).update({
+        "prediction_counter": firestore.transforms.Increment(1)
+    })
+
+
+def updateImageUploadStatus(vin):
+    status_collection.document(vin).update({
+        "image_counter": firestore.transforms.Increment(1)
+    })
+# def uploadMedia()
+
+# default class value for firestore
+# only run one you will get the Document already exists
+
+
+def populateVINCollectionPatten(id, totalIMGs=0):
+    status_collection.document(id).create(Status(
+        image_total=totalIMGs,
+        prediction_total=totalIMGs).__dict__)
+    ads_collection.document(id).create(AdsMedia().__dict__)
+    classification_collection.document(id).create(
+        Classification().__dict__)
     return True
 
 
-populateVINCollectionPatten("HelloWorld")
+# for i in ["1FT6W1EV5PWG07389", "3GNKBERS7MS537121", "5NMS44AL1PH506217"]:
+#     populateVINCollectionPatten(i)
