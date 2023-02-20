@@ -43,9 +43,10 @@ class EditlyBuilder:
 
         # [INSERT SECTION] [3]
         indexCounter = 3
-        for i in vehicleIMGFlash:
-            # senses.insert(indexCounter, i)
-            indexCounter += 1
+        if os.getenv("ENABLE_VEHICLE_DETAIL_RENDER_LIMIT") == "false":
+            for i in vehicleIMGFlash:
+                senses.insert(indexCounter, i)
+                indexCounter += 1
 
         dataFile = template.buildDataFrame(
             outPath="",

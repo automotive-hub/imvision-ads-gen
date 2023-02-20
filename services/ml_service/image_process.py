@@ -6,7 +6,7 @@ import os
 import glob
 from database import updateClassification
 
-from models.classification import Classification
+from models.classification import Classification, ClassificationLocation
 
 
 def upload_image(vin):
@@ -41,9 +41,27 @@ def upload_video(vin):
         # print(blob.public_url)
 
 
+def mock_predict_image(vin: str) -> Classification:
+    vehicleClassification = Classification()
+    tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
+    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/*"
+
+    for stringFile in glob.glob(tempFolderLocation):
+        fileName = os.path.basename(str(stringFile))
+        publicFileURL = '''https://storage.googleapis.com/imvision-ads.appspot.com/image_upload/{vin}/{fileName}'''.format(
+            vin=vin, fileName=fileName)
+        label = ClassificationLocation.EXTERIOR.name
+        vehicleClassification.update(
+            label, publicFileURL)
+        updateClassification(vin=vin, label=label,
+                             data=vehicleClassification)
+        vehicleClassification.EXTERIOR.append(stringFile)
+    return vehicleClassification
+
+
 def predict_image_classification_sample(
     vin: str,
-    endpoint_id: str,
+    endpoint_id: str = os.getenv("VERTEX_AI_ENDPOINT"),
     project: str = "862013669196",
     location: str = "us-central1",
     api_endpoint: str = "us-central1-aiplatform.googleapis.com",

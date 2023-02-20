@@ -10,7 +10,7 @@ from modules.editly_template.editly_runner import EditlyRunner
 from models.vehicleInfo import VehicleInfo, DealershipInfo
 import os
 
-from services.ml_service.image_process import predict_image_classification_sample, upload_image, upload_video
+from services.ml_service.image_process import mock_predict_image, predict_image_classification_sample, upload_image, upload_video
 # runner = EditlyRunner()
 
 
@@ -41,12 +41,17 @@ class DummyService(Resource):
         populateVINCollectionPatten(
             vinWithSalt, len(vehicleInfo.vehicle_local_imgs))
 
-        upload_image(vinWithSalt)
+        # upload_image(vinWithSalt)
         # #
-        # predict_image_classification_sample(vinWithSalt, endpoint_id="1185277932789039104"
-        #                                     )
+        if os.getenv("ENABLE_VERTEX_PREDICTION") == "false":
+            print("ok")
+            mock_predict_image(vinWithSalt)
+        else:
 
-        # # start render
+            predict_image_classification_sample(vinWithSalt, endpoint_id="1185277932789039104"
+                                                )
+
+        # start render
         dataFile = builder.build(vehicleInfo)
         runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
         runner.render()
