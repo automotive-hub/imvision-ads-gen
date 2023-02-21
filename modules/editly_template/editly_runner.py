@@ -44,10 +44,10 @@ class EditlyRunner:
     def __init__(self):
         self.mediaFiles = []
         self.adsMedia: AdsMedia = AdsMedia()
+        self.tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
+        self.generatedFolder = os.getenv("GENERATED_FOLDER_LOCATION")
 
     # make ads aspectRatio
-    tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
-    generatedFolder = os.getenv("GENERATED_FOLDER_LOCATION")
 
     def createAdaptiveRatioDataFile(self, dataFile, info: VehicleInfo):
         data = dataFile
