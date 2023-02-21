@@ -1,6 +1,5 @@
 from flask_restful import Resource
-from database import populateVINCollectionPatten, updateAdsMedia, updateImageCounter
-from database import populateVINCollectionPatten, updateClassificationStatus, updateDownloadStatus, updateImageTotal, updateVideoStatus
+from database import populateVINCollectionPatten, updateAdsMedia, updateClassificationStatus, updateDownloadStatus, updateImageTotal, updateVideoStatus
 
 from models.dummy_model import DummyModel
 from modules.editly_template import *
