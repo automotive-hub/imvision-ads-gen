@@ -54,7 +54,6 @@ def mock_predict_image(vin: str) -> Classification:
             label, publicFileURL)
         updateClassification(vin=vin, label=label,
                              data=vehicleClassification)
-        vehicleClassification.EXTERIOR.append(stringFile)
     return vehicleClassification
 
 
