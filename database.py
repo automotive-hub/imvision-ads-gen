@@ -62,8 +62,9 @@ def populateVINCollectionPatten(id, totalIMGs=0):
     return status
 
 
-def updateImageCounter(id, totalIMGs):
-    status_collection.document(id).update({"image_total": totalIMGs})
+def updateImageTotal(id, totalIMGs):
+    status_collection.document(id).update(
+        {"image_total": totalIMGs, "prediction_total": totalIMGs})
 
 
 def updateDownloadStatus(id, status):
@@ -71,7 +72,6 @@ def updateDownloadStatus(id, status):
 
 
 def updateClassificationStatus(id, status):
-
     status_collection.document(id).update({"classification": status})
 
 

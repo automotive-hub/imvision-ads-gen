@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from database import populateVINCollectionPatten, updateClassificationStatus, updateDownloadStatus, updateImageCounter, updateVideoStatus
+from database import populateVINCollectionPatten, updateClassificationStatus, updateDownloadStatus, updateImageTotal, updateVideoStatus
 
 from models.dummy_model import DummyModel
 from modules.editly_template import *
@@ -40,7 +40,7 @@ def run(vinWithSalt):
     vehicleInfo.dealership_info.local_imgs = vehicleRequest.downloadVehicleIMG(
         urls=vehicleInfo.dealership_info.public_imgs, folder=vehicleInfo.dealership_folder_name())
 
-    updateImageCounter(
+    updateImageTotal(
         vinWithSalt, len(vehicleInfo.vehicle_local_imgs))
 
     upload_image(vinWithSalt)
