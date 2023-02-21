@@ -27,7 +27,7 @@ def addAdsMedia(id, mediaInfo: AdsMedia):
 
 
 def updateClassification(vin, label, data: Classification):
-    _updateClassificationStatus(vin)
+    _updateClassificationCounter(vin)
     mapDict = {}
     mapDict[label] = data.__dict__[label]
     classification_collection.document(vin).update(
@@ -35,13 +35,13 @@ def updateClassification(vin, label, data: Classification):
     )
 
 
-def _updateClassificationStatus(vin):
+def _updateClassificationCounter(vin):
     status_collection.document(vin).update({
         "prediction_counter": firestore.transforms.Increment(1)
     })
 
 
-def updateImageUploadStatus(vin):
+def updateImageUploadCounter(vin):
     status_collection.document(vin).update({
         "image_counter": firestore.transforms.Increment(1)
     })
@@ -60,10 +60,29 @@ def populateVINCollectionPatten(id, totalIMGs=0):
         Classification().__dict__)
     return True
 
+
 def updateImageCounter(id, totalIMGs):
     status_collection.document(id).update(Status(
-    image_total=totalIMGs,
-    prediction_total=totalIMGs).__dict__)
+        image_total=totalIMGs,
+        prediction_total=totalIMGs).__dict__)
 
+
+def updateDownloadStatus(id, status):
+    status_collection.document(id).update(Status(
+        download=status
+    ).__dict__)
+
+
+def updateClassificationStatus(id, status):
+    status_collection.document(id).update(Status(
+        classification=status
+    ).__dict__)
+
+
+def updateVideoStatus(id, status):
+    status_collection.document(id).update(Status(
+        status=status
+    ).__dict__)
+    
 # for i in ["1FT6W1EV5PWG07389", "3GNKBERS7MS537121", "5NMS44AL1PH506217"]:
 #     populateVINCollectionPatten(i)
