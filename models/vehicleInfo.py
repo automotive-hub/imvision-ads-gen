@@ -60,11 +60,26 @@ class MediaInfo:
 
 
 @dataclass
+class MediaRatio:
+    width: int
+    height: int
+    name: str
+    type: str
+    file_extension: str
+
+
+@dataclass
 class AdsMedia:
     desktop_video_ref: str = ""
     mobile_video_ref: str = ""
     banner_ref: str = ""
     gif_ref: str = ""
+    # mediaRenderFiles:
+
+    def addMediaRef(self, ratio: MediaRatio, vin, fileName):
+        publicFileURL = '''https://storage.googleapis.com/imvision-ads.appspot.com/video_upload/{vin}/{fileName}'''.format(
+            vin=vin, fileName=fileName)
+        self.__dict__[ratio.type] = publicFileURL
 
 
 @dataclass

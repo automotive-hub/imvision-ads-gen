@@ -22,8 +22,9 @@ classification_collection = db.collection("classification")
 fileStorage = FileStorageClient(project=project, credentials=credential)
 
 
-def addAdsMedia(id, mediaInfo: AdsMedia):
-    ads_collection.document(id).set(mediaInfo)
+def updateAdsMedia(vin, mediaInfo: AdsMedia):
+    print("UPDATE AdsMedia \t" + vin)
+    ads_collection.document(vin).update(mediaInfo.__dict__)
 
 
 def updateClassification(vin, label, data: Classification):
@@ -60,10 +61,11 @@ def populateVINCollectionPatten(id, totalIMGs=0):
         Classification().__dict__)
     return True
 
+
 def updateImageCounter(id, totalIMGs):
     status_collection.document(id).update(Status(
-    image_total=totalIMGs,
-    prediction_total=totalIMGs).__dict__)
+        image_total=totalIMGs,
+        prediction_total=totalIMGs).__dict__)
 
 # for i in ["1FT6W1EV5PWG07389", "3GNKBERS7MS537121", "5NMS44AL1PH506217"]:
 #     populateVINCollectionPatten(i)

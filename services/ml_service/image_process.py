@@ -27,18 +27,16 @@ def upload_image(vin):
 
 def upload_video(vin):
     tempFolderLocation = os.getenv("GENERATED_FOLDER_LOCATION")
-    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/**"
+    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/*"
     client = storage.Client()
     bucket = client.get_bucket('imvision-ads.appspot.com')
     for stringFile in glob.glob(tempFolderLocation):
-        # get name, that is last item after split
-        print(str(stringFile).split("\\")[-1:][0])
-        # fileName = str(stringFile).split("\\")[-1:][0]
         fileName = os.path.basename(str(stringFile))
         fileBloc = "video_upload/" + vin + "/" + fileName
         blob = bucket.blob(fileBloc)
+        print("UPLOADING: \t" + stringFile)
         blob.upload_from_filename(stringFile)
-        # print(blob.public_url)
+        print("DONE UPLOAD: \t" + stringFile)
 
 
 def mock_predict_image(vin: str) -> Classification:

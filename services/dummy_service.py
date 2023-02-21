@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from database import populateVINCollectionPatten, updateImageCounter
+from database import populateVINCollectionPatten, updateAdsMedia, updateImageCounter
 
 from models.dummy_model import DummyModel
 from modules.editly_template import *
@@ -48,7 +48,7 @@ def run(vinWithSalt):
         mock_predict_image(vinWithSalt)
     else:
 
-        predict_image_classification_sample(vinWithSalt, endpoint_id="1185277932789039104"
+        predict_image_classification_sample(vinWithSalt,
                                             )
 
         # start render
@@ -56,7 +56,9 @@ def run(vinWithSalt):
     runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
     runner.render()
 
-    # upload_video(vinWithSalt)
+    upload_video(vinWithSalt)
+
+    updateAdsMedia(vin=vinWithSalt, mediaInfo=runner.adsMedia)
     vehicleInfo.cleanup()
 
 
