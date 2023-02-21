@@ -4,7 +4,7 @@ from google.cloud import aiplatform, storage
 from google.cloud.aiplatform.gapic.schema import predict
 import os
 import glob
-from database import updateClassification
+from database import updateClassification, updateImageUploadCounter
 
 from models.classification import Classification, ClassificationLocation
 
@@ -22,6 +22,7 @@ def upload_image(vin):
         fileBloc = "image_upload/" + vin + "/" + fileName
         blob = bucket.blob(fileBloc)
         blob.upload_from_filename(stringFile)
+        updateImageUploadCounter(vin)
         # print(blob.public_url)
 
 

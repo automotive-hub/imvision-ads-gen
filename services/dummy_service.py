@@ -23,7 +23,7 @@ def praseRequest(vinWithSalt=""):
     return vin, salt
 
 
-def run(vinWithSalt, statusInstance):
+def run(vinWithSalt):
     vin, salt = praseRequest(vinWithSalt=vinWithSalt)
     builder = EditlyBuilder()
     vehicleRequest = VehicleRequest()
@@ -63,15 +63,15 @@ def run(vinWithSalt, statusInstance):
     runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
     runner.render()
 
-    # upload_video(vinWithSalt)
+    upload_video(vinWithSalt)
     vehicleInfo.cleanup()
     updateVideoStatus(vinWithSalt, status="done")
 
 
 class DummyService(Resource):
     def post(self, vinWithSalt):
-        status = populateVINCollectionPatten(vinWithSalt)
-        x = threading.Thread(target=run, args=(vinWithSalt,status,), daemon=True)
+        populateVINCollectionPatten(vinWithSalt)
+        x = threading.Thread(target=run, args=(vinWithSalt,), daemon=True)
         x.start()
         # end render
         return {"message": "ok"}
