@@ -25,7 +25,6 @@ def praseRequest(vinWithSalt=""):
 
 def run(vinWithSalt):
     vin, salt = praseRequest(vinWithSalt=vinWithSalt)
-    dummyModel = DummyModel("test name", "test year")
     builder = EditlyBuilder()
     vehicleRequest = VehicleRequest()
     runner = EditlyRunner()
@@ -42,7 +41,7 @@ def run(vinWithSalt):
     updateImageCounter(
         vinWithSalt, len(vehicleInfo.vehicle_local_imgs))
 
-    # upload_image(vinWithSalt)
+    upload_image(vinWithSalt)
     # #
     if os.getenv("ENABLE_VERTEX_PREDICTION") == "false":
         print("ok")
@@ -55,9 +54,10 @@ def run(vinWithSalt):
         # start render
     dataFile = builder.build(vehicleInfo)
     runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
-    # runner.render()
+    runner.render()
 
     # upload_video(vinWithSalt)
+    vehicleInfo.cleanup()
 
 
 class DummyService(Resource):

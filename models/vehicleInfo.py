@@ -1,4 +1,5 @@
 import os
+import shutil
 from typing import List
 from typing import Any
 from dataclasses import dataclass
@@ -30,7 +31,22 @@ class VehicleInfo:
         return self.id
 
     def dealership_folder_name(self):
-        return os.path.join(self.id, "dealership")
+        return os.path.join("dealership", self.id)
+
+    def cleanup(self):
+        # cleanup generated
+        tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
+        generatedFolder = os.getenv("GENERATED_FOLDER_LOCATION")
+
+        tempVehicleIMGS = os.path.join(tempFolderLocation, self.folder_name())
+        tempDealershipIMGS = os.path.join(
+            tempFolderLocation, self.dealership_folder_name())
+        generatedContent = os.path.join(generatedFolder, self.folder_name())
+        arr = [tempVehicleIMGS, tempDealershipIMGS]
+        if os.getenv("WIPE_GENERATED_FOLDER") == "true":
+            arr.append(generatedContent)
+        for i in arr:
+            shutil.rmtree(i)
 
 
 @dataclass
