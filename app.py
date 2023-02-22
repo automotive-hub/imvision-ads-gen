@@ -20,4 +20,6 @@ if __name__ == "__main__":
                              os.getenv("DOMAIN"), "fullchain.pem")
     keyPath = os.path.join("/etc/letsencrypt/live",
                            os.getenv("DOMAIN"), "key.pem")
+    print(chainPath)
+    print(keyPath)
     app.run(debug=True, host="0.0.0.0", ssl_context=(chainPath, keyPath))
