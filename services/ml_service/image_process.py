@@ -59,7 +59,7 @@ def mock_predict_image(vin: str) -> Classification:
 
 def predict_image_classification_sample(
     vin: str,
-    endpoint_id: str = os.getenv("VERTEX_AI_ENDPOINT"),
+    endpoint_id: str,
     project: str = "862013669196",
     location: str = "us-central1",
     api_endpoint: str = "us-central1-aiplatform.googleapis.com",

@@ -53,7 +53,7 @@ def run(vinWithSalt):
         mock_predict_image(vinWithSalt)
     else:
         predict_image_classification_sample(
-            vinWithSalt, endpoint_id="1185277932789039104")
+            vinWithSalt, endpoint_id=os.getenv("VERTEX_AI_ENDPOINT"))
     updateClassificationStatus(vinWithSalt, status="done")
 
     # ----------------- Video ------------------
