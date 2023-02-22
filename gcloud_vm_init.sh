@@ -1,4 +1,3 @@
-sudo -i
 # Ubunto LTS CPU intensive
 sudo apt-get update
 sudo apt-get install -y python
@@ -22,6 +21,7 @@ sudo apt-get install -y nodejs
 
 sudo npm config set unsafe-perm true
 sudo npm i -g editly
+sudo npm i -g pm2
 
 sudo apt-get install -y python3-pip
 #
