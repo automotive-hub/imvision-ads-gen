@@ -1,3 +1,4 @@
+sudo -i
 # Ubunto LTS CPU intensive
 sudo apt-get update
 sudo apt-get install -y python
@@ -25,4 +26,6 @@ sudo npm i -g editly
 sudo apt-get install -y python3-pip
 #
 pip3 install -r requirements.txt
+
+# sudo -v ; curl https://rclone.org/install.sh | sudo bash
 # xvfb-run -s "-ac -screen 0 1280x1024x24" 
