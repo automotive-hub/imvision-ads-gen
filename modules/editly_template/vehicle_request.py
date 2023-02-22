@@ -40,7 +40,7 @@ class VehicleRequest:
         dealerIMG = [i.value for i in dealerIMGExp.find(data)]
         if os.getenv("ENABLE_LIMIT_IMG") == "true":
             limitAmount = int(os.getenv("LIMIT_RATE_VEHICLE_IMG"))
-            dealerIMG = dealerIMG[:limitAmount]
+            imgsURL = imgsURL[:limitAmount]
         dealerNameExp = jsonpath_ng.parse(self.dealerName)
         dealerName = "".join(i.value for i in dealerNameExp.find(data))
 #

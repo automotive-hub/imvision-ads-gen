@@ -64,7 +64,7 @@ class EditlyRunner:
                 json.dump(data, newFile)
                 file = os.path.basename(data["outPath"])
                 self.adsMedia.addMediaRef(
-                    ratio=ratio, vin=info.vin,  fileName=file)
+                    ratio=ratio, vin=info.id,  fileName=file)
 
     def render(self):
         headless_gl = ""
