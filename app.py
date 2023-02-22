@@ -21,9 +21,8 @@ if __name__ == "__main__":
     chainPath = os.path.join("/etc/letsencrypt/live",
                              os.getenv("DOMAIN"), "fullchain.pem")
     keyPath = os.path.join("/etc/letsencrypt/live",
-                           os.getenv("DOMAIN"), "key.pem")
-    context = ssl.SSLContext()
-    context.load_cert_chain(chainPath, keyPath)
+                           os.getenv("DOMAIN"), "privkey.pem")
+    
     print(chainPath)
     print(keyPath)
-    app.run(debug=True, host="0.0.0.0", ssl_context=context)
+    app.run(debug=True, host="0.0.0.0", ssl_context=(chainPath, keyPath))
