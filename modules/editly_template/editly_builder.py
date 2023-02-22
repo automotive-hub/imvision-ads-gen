@@ -1,3 +1,4 @@
+from models.classification import Classification
 from .editly_template import EditlyTemplate
 from models.vehicleInfo import VehicleInfo
 import os
@@ -9,7 +10,7 @@ class EditlyBuilder:
         # return [os.path.realpath(i) for i in urls]
         return urls
 
-    def build(self, info: VehicleInfo):
+    def build(self, info: VehicleInfo, classification: Classification):
         pattern = "*.[jpg][jpeg][png]"
         # carIMG = [os.path.realpath(txt_file.resolve()) for txt_file in pathlib.Path(
         #     './sample_media/1FT7W2BT4NEE90002/').glob(pattern)]
@@ -24,10 +25,10 @@ class EditlyBuilder:
         if len(info.dealership_info.local_imgs) > 0:
             dealerIMG = self.realPathHelper(info.dealership_info.local_imgs)[0]
         senses = [
-            ## [makeIntroGreeting] [0]
+            # [makeIntroGreeting] [0]
             template.makeIntroGreeting(
                 text="ARE YOU LOOKING FOR", fontPath=fontPath),
-            ## [makeVehicleMainEntrySense] [1]
+            # [makeVehicleMainEntrySense] [1]
             template.makeVehicleMainEntrySense(
                 carIMG[0], info.vehicle_name),
 
@@ -36,7 +37,7 @@ class EditlyBuilder:
 
             # [INSERT SECTION] [3]
             ########
-            ## [makeVehicleCallToAction] [4]
+            # [makeVehicleCallToAction] [4]
             template.makeVehicleCallToAction(
                 callToActionIMGPath=carIMG[1])
         ]
@@ -55,3 +56,34 @@ class EditlyBuilder:
             senses=senses)
         # print(json.dumps(build({})))
         return dataFile
+
+    # help function
+
+    def sortImageSence(classification: Classification, vehicleInfo: VehicleInfo):
+        total = 6
+        sectionOneLabel = {
+            'EXTERIOR'
+        }
+        sectionTwoLable = {
+            'MID_CENTER_POINT',
+            'DASH_PANEL',
+            'LEFT_PANEL',
+            'RIGHT_PANEL',
+            'BOTTOM_LEFT_PANEL',
+            'BOTTOM_RIGHT_PANEL',
+        }
+        sectionThreeLable = {
+            'BOTTOM_BACK': 16
+        }
+        finalImage = []
+        for i in range(total):
+            finalImage.append()
+
+    def getImageOneSection():
+        return []
+    
+    def getImageSeccondSection():
+        return []
+    
+    def getImageThirdSection():
+        return []

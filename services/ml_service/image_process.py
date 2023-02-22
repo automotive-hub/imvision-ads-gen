@@ -1,4 +1,5 @@
 import base64
+import threading
 
 from google.cloud import aiplatform, storage
 from google.cloud.aiplatform.gapic.schema import predict
@@ -7,6 +8,7 @@ import glob
 from database import updateClassification, updateImageUploadCounter
 
 from models.classification import Classification, ClassificationLocation
+from models.vehicleInfo import VehicleInfo
 
 
 def upload_image(vin):
@@ -15,15 +17,21 @@ def upload_image(vin):
     client = storage.Client()
     bucket = client.get_bucket('imvision-ads.appspot.com')
     for stringFile in glob.glob(tempFolderLocation):
-        # get name, that is last item after split
-        print(str(stringFile).split("\\")[-1:][0])
-        # fileName = str(stringFile).split("\\")[-1:][0]
-        fileName = os.path.basename(str(stringFile))
-        fileBloc = "image_upload/" + vin + "/" + fileName
-        blob = bucket.blob(fileBloc)
-        blob.upload_from_filename(stringFile)
-        updateImageUploadCounter(vin)
-        # print(blob.public_url)
+        x = threading.Thread(target=upload_image_to_bucket, args=(
+            stringFile, bucket, vin), daemon=True)
+        x.start()
+
+
+def upload_image_to_bucket(stringFile, bucket, vin):
+    # get name, that is last item after split
+    print(str(stringFile).split("\\")[-1:][0])
+    # fileName = str(stringFile).split("\\")[-1:][0]
+    fileName = os.path.basename(str(stringFile))
+    fileBloc = "image_upload/" + vin + "/" + fileName
+    blob = bucket.blob(fileBloc)
+    blob.upload_from_filename(stringFile)
+    updateImageUploadCounter(vin)
+    # print(blob.public_url)
 
 
 def upload_video(vin):
@@ -40,26 +48,29 @@ def upload_video(vin):
         print("DONE UPLOAD: \t" + stringFile)
 
 
-def mock_predict_image(vin: str) -> Classification:
+def mock_predict_image(vin: str, vehicleInfo: VehicleInfo) -> Classification:
     vehicleClassification = Classification()
     tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
-    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/*"
+    tempFolderLocation = os.path.join(tempFolderLocation, vin)
 
-    for stringFile in glob.glob(tempFolderLocation):
+    for stringFile in glob.glob(tempFolderLocation + "/*"):
         fileName = os.path.basename(str(stringFile))
         publicFileURL = '''https://storage.googleapis.com/imvision-ads.appspot.com/image_upload/{vin}/{fileName}'''.format(
             vin=vin, fileName=fileName)
         label = ClassificationLocation.EXTERIOR.name
         vehicleClassification.update(
             label, publicFileURL)
+        vehicleInfo.vehicle_local_bucket_img_map[os.path.join(
+            tempFolderLocation, fileName)] = publicFileURL
         updateClassification(vin=vin, label=label,
                              data=vehicleClassification)
-    return vehicleClassification
+    return vehicleClassification, vehicleInfo
 
 
 def predict_image_classification_sample(
     vin: str,
     endpoint_id: str,
+    vehicleInfo: VehicleInfo,
     project: str = "862013669196",
     location: str = "us-central1",
     api_endpoint: str = "us-central1-aiplatform.googleapis.com",
@@ -70,9 +81,9 @@ def predict_image_classification_sample(
     client = aiplatform.gapic.PredictionServiceClient(
         client_options=client_options)
     tempFolderLocation = os.getenv("TEMP_FOLDER_LOCATION")
-    tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/*"
+    tempFolderLocation = os.path.join(tempFolderLocation, vin)
 
-    for stringFile in glob.glob(tempFolderLocation):
+    for stringFile in glob.glob(tempFolderLocation + "/*"):
         encoded_content = []
         with open(stringFile, "rb") as f:
             file_content = f.read()
@@ -100,10 +111,12 @@ def predict_image_classification_sample(
             fileName = os.path.basename(str(stringFile))
             publicFileURL = '''https://storage.googleapis.com/imvision-ads.appspot.com/image_upload/{vin}/{fileName}'''.format(
                 vin=vin, fileName=fileName)
-            vehicleClassification.update(labelPred, publicFileURL)
+            vehicleClassification.update(labelPred, publicFileURL, stringFile)
+            vehicleInfo.vehicle_local_bucket_img_map[os.path.join(
+                tempFolderLocation, fileName)] = publicFileURL
             updateClassification(vin=vin, label=labelPred,
                                  data=vehicleClassification)
-    return vehicleClassification
+    return vehicleClassification, vehicleInfo
 
 # help function
 

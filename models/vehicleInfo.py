@@ -26,7 +26,7 @@ class VehicleInfo:
     dealership_info: DealershipInfo
     vehicle_public_url_imgs: List[str]
     vehicle_local_imgs: List[str]
-
+    vehicle_local_bucket_img_map: dict
     def folder_name(self):
         return self.id
 

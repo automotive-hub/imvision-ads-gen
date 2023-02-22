@@ -50,6 +50,7 @@ class VehicleRequest:
             dealership_info=DealershipInfo(
                 name=dealerName, location="VN", public_imgs=dealerIMG, local_imgs=[]),
             vehicle_public_url_imgs=imgsURL,
+            vehicle_local_bucket_img_map= {},
             vehicle_local_imgs=[]
         )
 

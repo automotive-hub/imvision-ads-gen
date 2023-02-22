@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from database import populateVINCollectionPatten, updateAdsMedia, updateClassificationStatus, updateDownloadStatus, updateImageTotal, updateVideoStatus
+from models.classification import Classification
 
 from models.dummy_model import DummyModel
 from modules.editly_template import *
@@ -28,6 +29,7 @@ def run(vinWithSalt):
     builder = EditlyBuilder()
     vehicleRequest = VehicleRequest()
     runner = EditlyRunner()
+
     # ----------------- Download | Upload Image ------------------
     updateDownloadStatus(vinWithSalt, status="processing")
     # Downloaded Vehicle IMG in [../temp]
@@ -47,19 +49,20 @@ def run(vinWithSalt):
     updateDownloadStatus(vinWithSalt, status="done")
 
     # ----------------- Classification Image ------------------
+    classification: Classification
     updateClassificationStatus(vinWithSalt, status="processing")
     if os.getenv("ENABLE_VERTEX_PREDICTION") == "false":
         print("ok")
-        mock_predict_image(vinWithSalt)
+        classification, vehicleInfo = mock_predict_image(vinWithSalt, vehicleInfo)
     else:
-        predict_image_classification_sample(
-            vinWithSalt, endpoint_id=os.getenv("VERTEX_AI_ENDPOINT"))
+        classification, vehicleInfo = predict_image_classification_sample(
+            vinWithSalt, endpoint_id=os.getenv("VERTEX_AI_ENDPOINT"), vehicleInfo = vehicleInfo)
     updateClassificationStatus(vinWithSalt, status="done")
 
     # ----------------- Video ------------------
     updateVideoStatus(vinWithSalt, status="processing")
-    # start render
-    dataFile = builder.build(vehicleInfo)
+
+    dataFile = builder.build(vehicleInfo, classification)
     runner.createAdaptiveRatioDataFile(dataFile, vehicleInfo)
     runner.render()
 
@@ -70,9 +73,9 @@ def run(vinWithSalt):
 
 
 class DummyService(Resource):
-    def get(self):
+    def get(self, vinWithSalt):
         return {"message": "ok"}
-    
+
     def post(self, vinWithSalt):
         populateVINCollectionPatten(vinWithSalt)
         x = threading.Thread(target=run, args=(vinWithSalt,), daemon=True)
