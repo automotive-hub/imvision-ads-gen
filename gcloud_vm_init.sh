@@ -13,6 +13,7 @@ sudo apt-get update -y
 
 sudo apt-get install -y ffmpeg
 sudo apt-get install -y xvfb
+sudo snap install --classic certbot
 #
 
 curl -fsSL https://deb.nodesource.com/setup_14.x | sudo -E bash - &&\
@@ -29,3 +30,5 @@ pip3 install -r requirements.txt
 
 # sudo -v ; curl https://rclone.org/install.sh | sudo bash
 # xvfb-run -s "-ac -screen 0 1280x1024x24" 
+
+sudo gsutil cp gs://staging.imvision-ads.appspot.com/vm-secret .
