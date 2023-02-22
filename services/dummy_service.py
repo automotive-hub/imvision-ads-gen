@@ -70,6 +70,9 @@ def run(vinWithSalt):
 
 
 class DummyService(Resource):
+    def get(self):
+        return {"message": "ok"}
+    
     def post(self, vinWithSalt):
         populateVINCollectionPatten(vinWithSalt)
         x = threading.Thread(target=run, args=(vinWithSalt,), daemon=True)
