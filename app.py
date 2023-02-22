@@ -1,4 +1,6 @@
 import os
+import ssl
+
 from flask import Flask
 from flask_cors import cross_origin, CORS
 from flask_restful import Api, Resource
@@ -20,6 +22,8 @@ if __name__ == "__main__":
                              os.getenv("DOMAIN"), "fullchain.pem")
     keyPath = os.path.join("/etc/letsencrypt/live",
                            os.getenv("DOMAIN"), "key.pem")
+    context = ssl.SSLContext()
+    context.load_cert_chain(chainPath, keyPath)
     print(chainPath)
     print(keyPath)
-    app.run(debug=True, host="0.0.0.0", ssl_context=(chainPath, keyPath))
+    app.run(debug=True, host="0.0.0.0", ssl_context=context)
