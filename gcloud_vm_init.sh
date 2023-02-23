@@ -31,4 +31,4 @@ pip3 install -r requirements.txt
 # sudo -v ; curl https://rclone.org/install.sh | sudo bash
 # xvfb-run -s "-ac -screen 0 1280x1024x24" 
 
-sudo gsutil cp gs://staging.imvision-ads.appspot.com/vm-secret .
+sudo gsutil cp -r gs://staging.imvision-ads.appspot.com/vm-secret .
