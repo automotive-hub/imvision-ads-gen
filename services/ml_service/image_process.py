@@ -20,7 +20,6 @@ def upload_image(vin):
         x = threading.Thread(target=upload_image_to_bucket, args=(
             stringFile, bucket, vin), daemon=True)
         x.start()
-        x.join()
 
 
 def upload_image_to_bucket(stringFile, bucket, vin):
