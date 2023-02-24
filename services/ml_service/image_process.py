@@ -113,8 +113,8 @@ def predict_image_classification_sample(
             publicFileURL = '''https://storage.googleapis.com/imvision-ads.appspot.com/image_upload/{vin}/{fileName}'''.format(
                 vin=vin, fileName=fileName)
             vehicleClassification.update(labelPred, publicFileURL)
-            vehicleInfo.vehicle_local_bucket_img_map[os.path.join(
-                tempFolderLocation, fileName)] = publicFileURL
+            vehicleInfo.vehicle_local_bucket_img_map[publicFileURL] = os.path.join(
+                tempFolderLocation, fileName)
             updateClassification(vin=vin, label=labelPred,
                                  data=vehicleClassification)
     return vehicleClassification, vehicleInfo
