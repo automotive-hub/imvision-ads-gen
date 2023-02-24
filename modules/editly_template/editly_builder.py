@@ -1,4 +1,5 @@
 import copy
+import dataclasses
 from models.classification import Classification
 from .editly_template import EditlyTemplate
 from models.vehicleInfo import VehicleInfo
@@ -68,7 +69,8 @@ class EditlyBuilder:
     # help function
     def sortImageScene(self, classification: Classification, vehicleInfo: VehicleInfo):
         total = 7
-        classificationTemp = classification.__dict__.copy()
+        classificationTemp = Classification(
+            **dataclasses.asdict(classification))
         imageOneSection, classificationTemp = vehicleInfo.getImageOneSection(
             4, classificationTemp)
         imageSeccondSection, classificationTemp = vehicleInfo.getImageSeccondSection(
@@ -81,7 +83,6 @@ class EditlyBuilder:
         finalImage += imageOneSection
         finalImage += imageSeccondSection
         finalImage += imageThirdSection
-
         if (len(finalImage) < total):
             numberRemain = total - len(finalImage)
             imageRemainSection, classificationTemp = vehicleInfo.getImageRemainSection(
