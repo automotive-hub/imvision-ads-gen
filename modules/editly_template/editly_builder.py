@@ -19,8 +19,15 @@ class EditlyBuilder:
         carIMG = self.realPathHelper(info.vehicle_local_imgs)
         fontPath = "./modules/editly_template/font/Futura-CondensedExtraBold-05.ttf"
         template = EditlyTemplate()
+
+        classificationIMGArr = self.sortImageScene(
+            classification=classification, vehicleInfo=info)
+        ##
+        vehicleMainEntryIMG = classificationIMGArr[0]
+        classificationIMGArr.remove(vehicleMainEntryIMG)
+
         vehicleIMGFlash = [template.makeVehicleIMGSense(dealerShipIMGPath=i)
-                           for i in carIMG[0:len(carIMG)]]
+                           for i in classificationIMGArr]
 
         dealerIMG = carIMG[0]
         if len(info.dealership_info.local_imgs) > 0:
@@ -31,7 +38,7 @@ class EditlyBuilder:
                 text="ARE YOU LOOKING FOR", fontPath=fontPath),
             # [makeVehicleMainEntrySense] [1]
             template.makeVehicleMainEntrySense(
-                carIMG[0], info.vehicle_name),
+                vehicleMainEntryIMG, info.vehicle_name),
 
             # [makeDealershipSense][2]
             template.makeDealershipSense(dealerIMG),
@@ -59,11 +66,11 @@ class EditlyBuilder:
         return dataFile
 
     # help function
-    def sortImageSence(classification: Classification, vehicleInfo: VehicleInfo):
-        total = 6
+    def sortImageScene(self, classification: Classification, vehicleInfo: VehicleInfo):
+        total = 7
         classificationTemp = classification.__dict__.copy()
         imageOneSection, classificationTemp = vehicleInfo.getImageOneSection(
-            3, classificationTemp)
+            4, classificationTemp)
         imageSeccondSection, classificationTemp = vehicleInfo.getImageSeccondSection(
             2, classificationTemp)
         imageThirdSection, classificationTemp = vehicleInfo.getImageThirdSection(
