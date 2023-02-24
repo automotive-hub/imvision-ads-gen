@@ -60,8 +60,8 @@ def mock_predict_image(vin: str, vehicleInfo: VehicleInfo) -> Classification:
         label = ClassificationLocation.EXTERIOR.name
         vehicleClassification.update(
             label, publicFileURL)
-        vehicleInfo.vehicle_local_bucket_img_map[os.path.join(
-            tempFolderLocation, fileName)] = publicFileURL
+        vehicleInfo.vehicle_local_bucket_img_map[publicFileURL] = os.path.join(
+            tempFolderLocation, fileName,)
         updateClassification(vin=vin, label=label,
                              data=vehicleClassification)
     return vehicleClassification, vehicleInfo

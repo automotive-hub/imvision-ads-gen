@@ -8,6 +8,8 @@ import json
 from dataclasses import dataclass
 from typing import List
 
+from models.classification import Classification
+
 
 @dataclass
 class DealershipInfo:
@@ -27,6 +29,7 @@ class VehicleInfo:
     vehicle_public_url_imgs: List[str]
     vehicle_local_imgs: List[str]
     vehicle_local_bucket_img_map: dict
+
     def folder_name(self):
         return self.id
 
@@ -47,6 +50,57 @@ class VehicleInfo:
             arr.append(generatedContent)
         for i in arr:
             shutil.rmtree(i)
+
+    def getImageOneSection(self, numberTakeImage: int, classification: Classification) -> tuple[list, Classification]:
+        sectionOneLabel = {
+            'EXTERIOR'
+        }
+        return self.getImageByLabel(sectionLabel=sectionOneLabel, numberTakeImage=numberTakeImage, classification=classification)
+
+    def getImageSeccondSection(self, numberTakeImage: int, classification: Classification) -> tuple[list, Classification]:
+        sectionTwoLable = {
+            'MID_CENTER_POINT',
+            'LEFT_PANEL',
+            'RIGHT_PANEL',
+            'DASH_PANEL',
+            'BOTTOM_LEFT_PANEL',
+            'BOTTOM_RIGHT_PANEL',
+        }
+        return self.getImageByLabel(sectionLabel=sectionTwoLable, numberTakeImage=numberTakeImage, classification=classification)
+
+
+    def getImageThirdSection(self, numberTakeImage: int, classification: Classification) -> tuple[list, Classification]:
+        sectionThreeLable = {
+            'BOTTOM_BACK',
+        }
+        return self.getImageByLabel(sectionLabel=sectionThreeLable, numberTakeImage=numberTakeImage, classification=classification)
+
+    def getImageRemainSection(self, numberTakeImage: int, classification: Classification) -> tuple[list, Classification]:
+        sectionLastLabel = {
+            'EXTERIOR',
+            'MID_CENTER_POINT',
+            'LEFT_PANEL',
+            'RIGHT_PANEL',
+            'BOTTOM_LEFT_PANEL',
+            'DASH_PANEL',
+            'BOTTOM_RIGHT_PANEL',
+            'BOTTOM_BACK',
+        }
+        return self.getImageByLabel(sectionLabel=sectionLastLabel, numberTakeImage=numberTakeImage, classification=classification)
+
+    def getImageByLabel(self, numberTakeImage, sectionLabel, classification: Classification) -> tuple[list, Classification]:
+        counter = 0
+        finalImage = []
+        for label in sectionLabel:
+            linkPublicURLArray: list = classification.__dict__[label].copy()
+            for linkPublicURL in linkPublicURLArray:
+                if (counter >= numberTakeImage):
+                    break
+                pathLocal = self.vehicle_local_bucket_img_map[linkPublicURL]
+                classification.__dict__[label].remove(linkPublicURL)
+                finalImage.append(pathLocal)
+                counter += 1
+        return finalImage, classification
 
 
 @dataclass

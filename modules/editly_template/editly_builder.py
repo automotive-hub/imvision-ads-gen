@@ -1,3 +1,4 @@
+import copy
 from models.classification import Classification
 from .editly_template import EditlyTemplate
 from models.vehicleInfo import VehicleInfo
@@ -58,32 +59,26 @@ class EditlyBuilder:
         return dataFile
 
     # help function
-
     def sortImageSence(classification: Classification, vehicleInfo: VehicleInfo):
         total = 6
-        sectionOneLabel = {
-            'EXTERIOR'
-        }
-        sectionTwoLable = {
-            'MID_CENTER_POINT',
-            'DASH_PANEL',
-            'LEFT_PANEL',
-            'RIGHT_PANEL',
-            'BOTTOM_LEFT_PANEL',
-            'BOTTOM_RIGHT_PANEL',
-        }
-        sectionThreeLable = {
-            'BOTTOM_BACK': 16
-        }
-        finalImage = []
-        for i in range(total):
-            finalImage.append()
+        classificationTemp = classification.__dict__.copy()
+        imageOneSection, classificationTemp = vehicleInfo.getImageOneSection(
+            3, classificationTemp)
+        imageSeccondSection, classificationTemp = vehicleInfo.getImageSeccondSection(
+            2, classificationTemp)
+        imageThirdSection, classificationTemp = vehicleInfo.getImageThirdSection(
+            1, classificationTemp)
 
-    def getImageOneSection():
-        return []
-    
-    def getImageSeccondSection():
-        return []
-    
-    def getImageThirdSection():
-        return []
+        finalImage = []
+
+        finalImage += imageOneSection
+        finalImage += imageSeccondSection
+        finalImage += imageThirdSection
+
+        if (len(finalImage) < total):
+            numberRemain = total - len(finalImage)
+            imageRemainSection, classificationTemp = vehicleInfo.getImageRemainSection(
+                numberRemain, classificationTemp)
+            finalImage += imageRemainSection
+
+        return finalImage

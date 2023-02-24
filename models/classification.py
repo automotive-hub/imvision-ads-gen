@@ -35,10 +35,7 @@ class Classification:
     NONE: List[str] = field(default_factory=list)
     DASH_PANEL: List[str] = field(default_factory=list)
 
-    # def update(self, enum: ClassificationLocation):
-    #     Classification[]
-
-    def update(self, label, imgPath):
-        arr = self.__dict__[label]
-        arr.append(imgPath)
+    def update(self, label, publicFileURL):
+        arr: list = self.__dict__[label]
+        arr.append(publicFileURL)
         setattr(self, label, arr)
