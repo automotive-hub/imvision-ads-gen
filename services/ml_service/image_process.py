@@ -16,10 +16,15 @@ def upload_image(vin):
     tempFolderLocation = os.path.join(tempFolderLocation, vin) + "/**"
     client = storage.Client()
     bucket = client.get_bucket('imvision-ads.appspot.com')
+    listThreadUpImage = []
     for stringFile in glob.glob(tempFolderLocation):
-        x = threading.Thread(target=upload_image_to_bucket, args=(
+        threadUpImage = threading.Thread(target=upload_image_to_bucket, args=(
             stringFile, bucket, vin), daemon=True)
-        x.start()
+        listThreadUpImage.append(threadUpImage)
+        threadUpImage.start()
+    
+    for thread in listThreadUpImage:
+        thread.join()
 
 
 def upload_image_to_bucket(stringFile, bucket, vin):
